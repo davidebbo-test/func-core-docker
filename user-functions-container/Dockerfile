@@ -1,2 +1,2 @@
 FROM davidebbo/azure-functions-runtime
-COPY app app
+COPY app /home/site/wwwroot

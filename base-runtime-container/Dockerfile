@@ -1,6 +1,5 @@
-FROM microsoft/aspnetcore
+FROM davidebbo/core-and-node
 WORKDIR /app
-COPY runtime runtime
-ENV AzureWebJobsScriptRoot=/app/app
-ENTRYPOINT ["dotnet", "runtime/Microsoft.Azure.WebJobs.Script.WebHost.dll"]
-
+COPY FunctionsRuntime FunctionsRuntime
+ENV AzureWebJobsScriptRoot=/home/site/wwwroot
+ENTRYPOINT ["dotnet", "FunctionsRuntime/Microsoft.Azure.WebJobs.Script.WebHost.dll"]
