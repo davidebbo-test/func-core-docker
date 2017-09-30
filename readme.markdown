@@ -37,7 +37,7 @@ From this repo's root, go into `base-container` and run
 - Create a junction to the runtime you created earlier. Yes, this needs to be made easier, maybe using a git submodule. e.g. (adjust for your Functions repo) `junction FunctionsRuntime D:\code\GitHub\azure-webjobs-sdk-script-linux\src\WebJobs.Script.WebHost\bin\Debug\netcoreapp2.0\publish`
 - `docker build -t azure-functions-runtime .`
 
-### Building a test image with some function files, and running it
+#### Building a test image with some function files, and running it
 
 - From this repo's root, go into `user-functions-container`
 - `docker build -t functest .`
