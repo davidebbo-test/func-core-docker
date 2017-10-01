@@ -1,2 +1,2 @@
-FROM azure-functions-runtime
-#COPY app /home/site/wwwroot
+FROM davidebbo/azure-functions-runtime
+COPY app /home/site/wwwroot

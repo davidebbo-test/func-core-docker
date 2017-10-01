@@ -36,19 +36,33 @@ From this repo's root, go into `base-container` and run
 - From this repo's root, go into `base-runtime-container`
 - Create a junction to the runtime you created earlier. Yes, this needs to be made easier, maybe using a git submodule. e.g. (adjust for your Functions repo) `junction FunctionsRuntime D:\code\GitHub\azure-webjobs-sdk-script-linux\src\WebJobs.Script.WebHost\bin\Debug\netcoreapp2.0\publish`
 - `docker build -t azure-functions-runtime .`
+- `docker tag azure-functions-runtime davidebbo/azure-functions-runtime`
+- `docker push davidebbo/azure-functions-runtime`
 
-#### Building a test image with some function files, and running it
+#### Creating an App Service using the mounted App Service storage
+
+- Create a new Web App for container, using davidebbo/azure-functions-runtime as the image
+- Set `WEBSITES_ENABLE_APP_SERVICE_STORAGE=true` in the App Settings so that the App Service storage gets mounted
+- You can now deploy your functions files using any technique (FTP, Kudu git, msdeploy, ...). WARNING: file change notifcations don't work, so you need to restart your App Service each time you make changes!
+
+#### Building a custom image with some function files baked into it
 
 - From this repo's root, go into `user-functions-container`
-- `docker build -t functest .`
-- `docker run -p 8000:80 functest`
+- `docker build -t davidebbo/functest .`
+- Testing locally: `docker run -p 8000:80 davidebbo/functest`
 - Test the C# function: http://localhost:8000/api/HttpTriggerCSharp?name=David
 - Test the Node function: http://localhost:8000/api/HttpTriggerJS?name=David
+- Push the custom image to docker hub (replace with your account): `docker push davidebbo/functest`
 
-### Running the test on Azure Container Instances (ACI)
+#### Using the custom image in App Service
 
-- `docker tag functest davidebbo/functest`
-- Push the test image to docker hub (replace with your account): `docker push davidebbo/functest`
+- Create a new Web App for container, using your test image as the image (e.g. davidebbo/functest)
+- Keep The Default `WEBSITES_ENABLE_APP_SERVICE_STORAGE=false`, since we are not using App Service storage here
+- You can now hit your test functions in Azure
+
+
+#### Running the test on Azure Container Instances (ACI)
+
 - Install the latest Azure CLI v2 (i.e. `az`)
 - `az group create --name FuncACI --location eastus`
 - `az container create --name funccore --image davidebbo/functest --memory 0.8 --resource-group FuncACI --ip-address public`
